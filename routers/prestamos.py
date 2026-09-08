@@ -7,7 +7,7 @@ from services import prestamos as prestamos_service
 
 
 router= APIRouter(
-    prefix='/prestamos',
+    prefix='/prestamos',## direccion  de nuestro endpoint
     tags=['Prestamos']
 )
 
