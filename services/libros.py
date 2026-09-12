@@ -1,10 +1,13 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from fastapi import HTTPException
+
 
 import models
 from schemas import CreateLibro,LibroUpdate
-
+from exceptions import LibroNoEncontradoError, ISBNExistenteError,LibroConPrestamosError
+## "¿Cuándo ocurre?"
+#Decide CUÁNDO ocurre uno de esos errores.
+## Logica de a la aplicacion
 
 def crear_libro(libro: CreateLibro, db: Session):
     libro_db=models.Libro(
@@ -13,7 +16,8 @@ def crear_libro(libro: CreateLibro, db: Session):
         precio= libro.precio,
         stock=libro.stock,
         categoria=libro.categoria,
-        disponible=libro.disponible
+        disponible=libro.disponible,
+        isbn=libro.isbn
     )
     try:
         db.add(libro_db)
@@ -22,10 +26,7 @@ def crear_libro(libro: CreateLibro, db: Session):
 
     except IntegrityError:
         db.rollback()
-        raise HTTPException(
-            status_code= 409,
-            detail='Conflicto con los datos existentes'
-        )
+        raise ISBNExistenteError() 
     except Exception:
         db.rollback()
         raise
@@ -34,15 +35,11 @@ def crear_libro(libro: CreateLibro, db: Session):
 
     return libro_db
 
-def obtener_libro(libro_id: int,db: Session):
-    libro=db.query(models.Libro).filter(models.Libro.id==libro_id).first()
+def obtener_libro(libro_id: int, db: Session):
+    libro=db.query(models.Libro).filter(models.Libro.id == libro_id).first()
 
     if libro is None:
-        raise HTTPException(
-        status_code=404,
-        detail='Lo siento, el libro que buscas no existe'
-
-        )
+        raise LibroNoEncontradoError()
 
     return libro
 
@@ -56,11 +53,8 @@ def actualizar_libro(libro_id: int, libro: LibroUpdate,db: Session):
     libro_actualizar=db.query(models.Libro).filter(models.Libro.id==libro_id).first()
 
     if libro_actualizar is None:
-        raise HTTPException(
-            status_code=404,
-            detail='Lo siento, el libro que buscas no existe'
-
-        )
+        raise LibroNoEncontradoError()
+    
     datos_actualizar=libro.model_dump(exclude_unset=True)
 
     ## Recorremos clave ,valor
@@ -72,6 +66,9 @@ def actualizar_libro(libro_id: int, libro: LibroUpdate,db: Session):
     try:
         db.commit()
         db.refresh(libro_actualizar)
+    except IntegrityError:
+        db.rollback()
+        raise ISBNExistenteError() 
     except Exception:
         db.rollback()
         raise
@@ -83,20 +80,16 @@ def actualizar_libro(libro_id: int, libro: LibroUpdate,db: Session):
 def eliminar_libro(libro_id: int, db: Session):
     libro=db.query(models.Libro).filter(models.Libro.id==libro_id).first()
     if libro is None:
-        raise HTTPException(
-            status_code= 404,
-            detail='Lo siento, el libro que busca no existe'
+        raise LibroNoEncontradoError()
 
-        )
+        
     try:
 
         db.delete(libro)
         db.commit()
     except IntegrityError:
         db.rollback()
-        raise HTTPException(
-            status_code= 409,
-            detail='No se puede eliminar el libro porque tiene datos relacionados')
+        raise LibroConPrestamosError() ## No se puede elimniar  porque ese libro tiene prestamos asociados
 
     except Exception:
         db.rollback()

@@ -9,6 +9,7 @@ class CreateLibro(BaseModel):
     stock: int=Field(ge=0)
     categoria: str=Field(min_length=2)
     disponible: bool=Field(default= True)
+    isbn: str=Field(min_length=10)
 
 
 class ResponseLibro(BaseModel):
