@@ -8,3 +8,12 @@ class ISBNExistenteError(Exception):
 
 class LibroConPrestamosError(Exception):
     pass
+
+class LibroSinStockError(Exception):
+    pass
+
+class PrestamoNoEncontradoError(Exception):
+    pass
+
+class PrestamoYaDevueltoError(Exception):
+    pass

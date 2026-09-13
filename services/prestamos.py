@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from fastapi import HTTPException
+
 
 import models
 from schemas import CreatePrestamo
+from exceptions import  (LibroNoEncontradoError,LibroSinStockError,PrestamoNoEncontradoError,PrestamoYaDevueltoError)
 
 ## logica de la aplicacion en prestamos
 
@@ -11,16 +12,10 @@ def crear_prestamo(prestamo: CreatePrestamo, db: Session):
     libro=(db.query(models.Libro).filter(models.Libro.id== prestamo.libro_id).first())
     ## Comprobamos si el libro existe
     if libro is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Lo siento, el libro que busca no existe"
-    )
+        raise LibroNoEncontradoError()
     ## si tiene suficiente stock
     if libro.stock == 0:
-        raise HTTPException(
-            status_code=409,
-            detail="Lo siento, el libro no tiene stock disponible"
-    ) ## no permitimos prestar
+        raise LibroSinStockError() ## no permitimos prestar
     
     
     prestamo_db= models.Prestamo(
@@ -39,10 +34,7 @@ def crear_prestamo(prestamo: CreatePrestamo, db: Session):
 
     except IntegrityError:
         db.rollback()
-        raise HTTPException(
-            status_code= 409,
-            detail='Conflicto con los datos existentes'
-        )
+        raise 
 
     except Exception:
         db.rollback()
@@ -56,15 +48,10 @@ def crear_prestamo(prestamo: CreatePrestamo, db: Session):
 def devolver_prestamo(prestamo_id: int, db: Session):
     prestamo=(db.query(models.Prestamo).filter(models.Prestamo.id==prestamo_id).first())
     if prestamo is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Lo siento, el prestamo que busca no existe"
-        )
+        raise PrestamoNoEncontradoError()
+    
     if prestamo.devuelto:
-        raise HTTPException(
-            status_code=409,
-            detail="El prestamo ya ha sido devuelto "
-                )
+        raise PrestamoYaDevueltoError()
 
         ## aumentamos un valor al stock por el libro que devolvio 
         ## con relationship consigo acceder a libro y a sus atributos
