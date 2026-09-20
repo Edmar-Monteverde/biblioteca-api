@@ -20,6 +20,7 @@ class ResponseLibro(BaseModel):
     stock: int
     categoria: str
     disponible: bool
+    isbn: str
 
 class LibroUpdate(BaseModel):
     titulo: str |None =Field(default=None, min_length=2)
