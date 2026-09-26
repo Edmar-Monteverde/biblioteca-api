@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings): ##lee variables  de entorno y convierte  y valida
@@ -8,8 +8,7 @@ class Settings(BaseSettings): ##lee variables  de entorno y convierte  y valida
     DB_PORT: int
     DB_NAME: str
 
-    class Config:
-        env_file = ".env" ###  donde buscar las variables 
+    model_config  = SettingsConfigDict(env_file='.env')
 
 
 settings = Settings()
