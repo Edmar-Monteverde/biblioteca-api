@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import  Session
 
 from database  import Base, get_db
 from main import app
@@ -14,37 +14,30 @@ TEST_DATABASE_URL=  f"mysql+pymysql://{settings.DB_USER}:{settings.DB_PASSWORD}@
 test_engine= create_engine(TEST_DATABASE_URL)
 
 
-
-TestingSessionLocal= sessionmaker(
-    autocommit= False,
-    autoflush=False,
-    bind= test_engine
-)
-
-def get_test_db():
-    db=TestingSessionLocal()
-
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = get_test_db
-
-#### terminamos de conerctar la db_tests 
-
-
-
-
 @pytest.fixture
 def preparar_db():
-    ## esto lo hacemos para que cada ejecucion de tests empiece desde cero 
-    Base.metadata.drop_all( bind=test_engine) ## Borro tablas de la base de datos de tests
-    Base.metadata.create_all(bind=test_engine) ## creamos las  tablas dentro de la base de datos de prueba
-    
+    # Preparación
+    connection = test_engine.connect()
+    transaction = connection.begin()
 
-    yield
+    def override_get_db():
+        db = Session(bind=connection,
+                     join_transaction_mode='create_savepoint')###si esta conexion ya tiene una transaccion
+
+        try:
+            yield db
+        finally:
+            db.close()
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    # Ejecución del test
+    yield connection
+
+    # Limpieza
+    app.dependency_overrides.pop(get_db, None)  # Quitamos el override
+    transaction.rollback()                     # Deshacemos la transacción
+    connection.close()                         # Cerramos la conexión
 
 @pytest.fixture
 def client():
