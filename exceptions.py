@@ -17,3 +17,6 @@ class PrestamoNoEncontradoError(Exception):
 
 class PrestamoYaDevueltoError(Exception):
     pass
+
+class EmailExistenteError(Exception):
+    pass

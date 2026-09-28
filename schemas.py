@@ -1,4 +1,4 @@
-from pydantic import BaseModel,Field
+from pydantic import BaseModel,Field, EmailStr
 
 
 ## Modelos de pydantic
@@ -42,3 +42,17 @@ class ResponsePrestamo(BaseModel):
     libro_id: int
     usuario:str
     devuelto:bool
+
+
+
+class UsuarioCreate(BaseModel):
+    email: EmailStr
+    password: str=Field(min_length=8)
+
+
+
+class UsuarioResponse(BaseModel):
+    id: int
+    email: EmailStr
+    rol: str
+    activo: bool

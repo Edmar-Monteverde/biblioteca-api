@@ -56,6 +56,13 @@ def libro_data():
         "isbn": "9780132350884",
     }
 
+@pytest.fixture
+def usuario_data():
+    return {
+        'email' : 'tests@gmail.com',
+        'password': 'Clave12345',
+    }
+
 
     
 @pytest.fixture

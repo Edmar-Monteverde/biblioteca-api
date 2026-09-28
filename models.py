@@ -31,3 +31,11 @@ class Prestamo(Base):
 
     ## relationship nos permite navegar esa relacion desde python /orm
     #back_population nos indica el otro lado de esta relacion 
+
+class Usuario(Base):
+    __tablename__='usuarios'
+    id= Column(Integer, primary_key=True, autoincrement= True)
+    email= Column(String(100),nullable= False,unique=True,index=True)
+    password_hash= Column(String(100),nullable=False)
+    rol= Column(String(100),nullable= False)
+    activo= Column(Boolean, default= True, nullable= False)

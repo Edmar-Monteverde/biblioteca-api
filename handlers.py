@@ -4,7 +4,8 @@
 from fastapi.responses import JSONResponse  ##  Sirve para devolver un respuesta Json
 from fastapi import Request ## para representar una peticion que esta procesandose
 
-from exceptions import (LibroNoEncontradoError, ISBNExistenteError, LibroConPrestamosError,LibroSinStockError,PrestamoYaDevueltoError,PrestamoNoEncontradoError)
+from exceptions import (LibroNoEncontradoError, ISBNExistenteError, LibroConPrestamosError,LibroSinStockError,
+                        PrestamoYaDevueltoError,PrestamoNoEncontradoError,EmailExistenteError)
 
 
 ## handler libro
@@ -43,4 +44,10 @@ def manejar_prestamo_ya_devuelto(request: Request, exc: PrestamoYaDevueltoError)
     return JSONResponse(
         status_code= 409,
         content={'detail': 'El prestamo ya ha sido devuelto'}
+    )
+
+def manejar_email_existente(request:Request, exc: EmailExistenteError):
+    return JSONResponse(
+        status_code=409,
+        content={'detail': 'El email ya existe'}
     )
