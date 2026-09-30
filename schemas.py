@@ -45,9 +45,9 @@ class ResponsePrestamo(BaseModel):
 
 
 
-class UsuarioCreate(BaseModel):
+class UsuarioCreate(BaseModel): ## Crear una cuenta
     email: EmailStr
-    password: str=Field(min_length=8)
+    password: str = Field(min_length=8)
 
 
 
@@ -56,3 +56,8 @@ class UsuarioResponse(BaseModel):
     email: EmailStr
     rol: str
     activo: bool
+
+
+class UsuarioLogin(BaseModel):  ## Credenciales para autenticar una cuenta existente
+    email: EmailStr
+    password: str = Field(min_length=8)

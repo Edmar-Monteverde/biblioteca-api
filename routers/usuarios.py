@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from schemas import (UsuarioCreate,UsuarioResponse)
+from schemas import (UsuarioCreate,UsuarioResponse,UsuarioLogin)
 from fastapi import APIRouter,Depends
 from database import  get_db
 
@@ -20,3 +20,10 @@ router=APIRouter(
 def crear_usuario(usuario:UsuarioCreate,db:Session=Depends(get_db)):
 
     return service_usuarios.crear_usuario(usuario,db)
+
+
+## Hacer login
+
+@router.post('/login',response_model= UsuarioResponse)
+def  hacer_login(usuario:UsuarioLogin,db:Session = Depends(get_db)):
+    return service_usuarios.login_usuario(usuario,db)

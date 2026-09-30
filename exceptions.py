@@ -20,3 +20,11 @@ class PrestamoYaDevueltoError(Exception):
 
 class EmailExistenteError(Exception):
     pass
+
+class CredencialesInvalidasError(Exception):
+    pass
+
+class UsuarioInactivoError(Exception):
+    pass
+
+

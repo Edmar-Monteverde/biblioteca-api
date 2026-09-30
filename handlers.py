@@ -5,7 +5,8 @@ from fastapi.responses import JSONResponse  ##  Sirve para devolver un respuesta
 from fastapi import Request ## para representar una peticion que esta procesandose
 
 from exceptions import (LibroNoEncontradoError, ISBNExistenteError, LibroConPrestamosError,LibroSinStockError,
-                        PrestamoYaDevueltoError,PrestamoNoEncontradoError,EmailExistenteError)
+                        PrestamoYaDevueltoError,PrestamoNoEncontradoError,EmailExistenteError, CredencialesInvalidasError,
+                        UsuarioInactivoError)
 
 
 ## handler libro
@@ -50,4 +51,17 @@ def manejar_email_existente(request:Request, exc: EmailExistenteError):
     return JSONResponse(
         status_code=409,
         content={'detail': 'El email ya existe'}
+    )
+
+def manejar_credenciales_invalidas(request:Request, exc: CredencialesInvalidasError):
+    return JSONResponse(
+        status_code = 401,
+        content = {'detail': 'Credenciales Incorrectas'}
+
+    )
+
+def manejar_usuario_inactivo(request:Request, exc: UsuarioInactivoError):
+    return JSONResponse(
+        status_code= 403,
+        content = {'detail': 'El usuario esta inactivo'}
     )
