@@ -8,6 +8,10 @@ class Settings(BaseSettings): ##lee variables  de entorno y convierte  y valida
     DB_PORT: int
     DB_NAME: str
 
+    SECRET_KEY: str
+    ALGORITHM:str
+    MINUTES: int
+
     model_config  = SettingsConfigDict(env_file='.env')
 
 

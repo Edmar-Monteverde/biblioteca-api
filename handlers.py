@@ -4,7 +4,9 @@
 from fastapi.responses import JSONResponse  ##  Sirve para devolver un respuesta Json
 from fastapi import Request ## para representar una peticion que esta procesandose
 
-from exceptions import (LibroNoEncontradoError, ISBNExistenteError, LibroConPrestamosError,LibroSinStockError,PrestamoYaDevueltoError,PrestamoNoEncontradoError)
+from exceptions import (LibroNoEncontradoError, ISBNExistenteError, LibroConPrestamosError,LibroSinStockError,
+                        PrestamoYaDevueltoError,PrestamoNoEncontradoError,EmailExistenteError, CredencialesInvalidasError,
+                        UsuarioInactivoError, TokenInvalidoError, TokenExpiradoError)
 
 
 ## handler libro
@@ -43,4 +45,35 @@ def manejar_prestamo_ya_devuelto(request: Request, exc: PrestamoYaDevueltoError)
     return JSONResponse(
         status_code= 409,
         content={'detail': 'El prestamo ya ha sido devuelto'}
+    )
+
+def manejar_email_existente(request:Request, exc: EmailExistenteError):
+    return JSONResponse(
+        status_code=409,
+        content={'detail': 'El email ya existe'}
+    )
+
+def manejar_credenciales_invalidas(request:Request, exc: CredencialesInvalidasError):
+    return JSONResponse(
+        status_code = 401,
+        content = {'detail': 'Credenciales Incorrectas'}
+
+    )
+
+def manejar_usuario_inactivo(request:Request, exc: UsuarioInactivoError):
+    return JSONResponse(
+        status_code= 403,
+        content = {'detail': 'El usuario esta inactivo'}
+    )
+
+def manejar_token_expirado(resquest:Request, exc: TokenExpiradoError):
+    return JSONResponse(
+        status_code = 401,
+        content = {'detail': 'Token inválido o expirado'}
+    )
+
+def manejar_token_invalido(request:Request, exc: TokenInvalidoError):
+    return JSONResponse(
+        status_code = 401,
+        content = {'detail': 'Token inválido o expirado'}
     )

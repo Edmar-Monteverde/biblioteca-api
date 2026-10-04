@@ -17,3 +17,18 @@ class PrestamoNoEncontradoError(Exception):
 
 class PrestamoYaDevueltoError(Exception):
     pass
+
+class EmailExistenteError(Exception):
+    pass
+
+class CredencialesInvalidasError(Exception):
+    pass
+
+class UsuarioInactivoError(Exception):
+    pass
+
+class TokenExpiradoError(Exception):
+    pass
+
+class TokenInvalidoError(Exception):
+    pass
