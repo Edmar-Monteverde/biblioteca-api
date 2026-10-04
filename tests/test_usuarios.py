@@ -75,8 +75,8 @@ def test_login_correcto(preparar_db,client,usuario_data):
     response2=client.post('/usuarios/login', json=usuario_data)
     data=response2.json()
     assert response2.status_code ==200
-    assert data['activo'] is True
-    assert data["email"] == usuario_data["email"]
+    assert 'access_token' in data
+    assert data['token_type'] == 'bearer'
 
 
 def test__login_password_incorrecta(preparar_db,client,usuario_data):
@@ -119,3 +119,4 @@ def test_login_usuario_inactivo(preparar_db,client,usuario_data):
 
     assert response2.status_code == 403
     assert data2['detail'] == 'El usuario esta inactivo'
+

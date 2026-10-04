@@ -27,4 +27,8 @@ class CredencialesInvalidasError(Exception):
 class UsuarioInactivoError(Exception):
     pass
 
+class TokenExpiradoError(Exception):
+    pass
 
+class TokenInvalidoError(Exception):
+    pass

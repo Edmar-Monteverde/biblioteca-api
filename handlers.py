@@ -6,7 +6,7 @@ from fastapi import Request ## para representar una peticion que esta procesando
 
 from exceptions import (LibroNoEncontradoError, ISBNExistenteError, LibroConPrestamosError,LibroSinStockError,
                         PrestamoYaDevueltoError,PrestamoNoEncontradoError,EmailExistenteError, CredencialesInvalidasError,
-                        UsuarioInactivoError)
+                        UsuarioInactivoError, TokenInvalidoError, TokenExpiradoError)
 
 
 ## handler libro
@@ -64,4 +64,16 @@ def manejar_usuario_inactivo(request:Request, exc: UsuarioInactivoError):
     return JSONResponse(
         status_code= 403,
         content = {'detail': 'El usuario esta inactivo'}
+    )
+
+def manejar_token_expirado(resquest:Request, exc: TokenExpiradoError):
+    return JSONResponse(
+        status_code = 401,
+        content = {'detail': 'Token inválido o expirado'}
+    )
+
+def manejar_token_invalido(request:Request, exc: TokenInvalidoError):
+    return JSONResponse(
+        status_code = 401,
+        content = {'detail': 'Token inválido o expirado'}
     )

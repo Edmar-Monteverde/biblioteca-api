@@ -3,10 +3,10 @@ from fastapi import FastAPI
 from routers import libros, prestamos,autores,usuarios
 from exceptions import (LibroNoEncontradoError, ISBNExistenteError, LibroConPrestamosError,
                         LibroSinStockError,PrestamoNoEncontradoError,PrestamoYaDevueltoError,EmailExistenteError,
-                        CredencialesInvalidasError,UsuarioInactivoError)
+                        CredencialesInvalidasError,UsuarioInactivoError,TokenInvalidoError,TokenExpiradoError)
 from handlers import (manejar_libro_no_encontrado, manejar_isbn_existente, manejar_libro_con_prestamos,
                       manejar_libro_sin_stock,manejar_prestamo_no_encontrado,manejar_prestamo_ya_devuelto,manejar_email_existente,
-                      manejar_credenciales_invalidas,manejar_usuario_inactivo)
+                      manejar_credenciales_invalidas,manejar_usuario_inactivo, manejar_token_expirado, manejar_token_invalido)
 
 ## Creamos la app con fastaapi
 app=FastAPI()
@@ -33,6 +33,10 @@ app.add_exception_handler(EmailExistenteError,manejar_email_existente)
 app.add_exception_handler(CredencialesInvalidasError, manejar_credenciales_invalidas)
 
 app.add_exception_handler(UsuarioInactivoError,manejar_usuario_inactivo)
+
+app.add_exception_handler(TokenExpiradoError,manejar_token_expirado)
+
+app.add_exception_handler(TokenInvalidoError,manejar_token_invalido)
 
 
 ## Conecta los modelos que heredan de Base y crea en la base de datos las tablas que todavia no existen
