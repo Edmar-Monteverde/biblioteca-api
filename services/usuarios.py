@@ -14,8 +14,6 @@ def crear_usuario(usuario:UsuarioCreate, db:Session):
     usuario_db= models.Usuario(
         email=usuario.email,
         password_hash= hash_password_db,
-        rol='usuario',
-        activo= True
 
     )
     try:

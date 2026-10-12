@@ -1,7 +1,7 @@
 from fastapi import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from security import decodificar_access_token
-from exceptions import TokenInvalidoError,UsuarioInactivoError
+from exceptions import TokenInvalidoError,UsuarioInactivoError,UsuarioNoAutorizadoError
 from database import  get_db
 from sqlalchemy.orm import Session
 import models
@@ -35,4 +35,8 @@ def obtener_usuario_actual(credenciales:HTTPAuthorizationCredentials = Depends(s
 ## obtenemos  un usuario perfectamente autenticado
 
 
-    
+def requerir_admin(usuario_actual=Depends(obtener_usuario_actual)):
+    if usuario_actual.rol != 'admin':
+        raise UsuarioNoAutorizadoError()
+
+    return usuario_actual

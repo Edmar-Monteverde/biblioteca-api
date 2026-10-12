@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from schemas import (CreateLibro,ResponseLibro,LibroUpdate)
 from fastapi import APIRouter,Depends
 from database import  get_db
+from dependencies import requerir_admin
 
 
 from services import libros as services_libros
@@ -18,7 +19,7 @@ router= APIRouter(
 ## → Define los endpoints y delega el trabajo al service.
 
 @router.post('',response_model=ResponseLibro, status_code=201)
-def crear_libro(libro:CreateLibro, db:Session=Depends(get_db)):
+def crear_libro(libro:CreateLibro, db:Session=Depends(get_db),usuario_admin=Depends(requerir_admin)):
     
     return services_libros.crear_libro(libro, db)
 
@@ -38,7 +39,7 @@ def obtener_libros(db:Session=Depends(get_db)):
 
 ## Actualizar un libro
 @router.patch('/{libro_id}',response_model=ResponseLibro,status_code=200)
-def actualizar_libro(libro_id:int, libro:LibroUpdate,db:Session=Depends(get_db)):
+def actualizar_libro(libro_id:int, libro:LibroUpdate,db:Session=Depends(get_db),usuario_admin = Depends(requerir_admin)):
     
     return services_libros.actualizar_libro(libro_id,libro,db)
 
@@ -46,7 +47,7 @@ def actualizar_libro(libro_id:int, libro:LibroUpdate,db:Session=Depends(get_db))
 ## Eliminar un libro
 
 @router.delete('/{libro_id}',status_code=200)
-def eliminar_libro(libro_id:int, db:Session=Depends(get_db)):
+def eliminar_libro(libro_id:int, db:Session=Depends(get_db),usuario_admin = Depends(requerir_admin)):
     
 
-    return   services_libros.eliminar_libro(libro_id,db)
+    return  services_libros.eliminar_libro(libro_id,db)
