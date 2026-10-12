@@ -24,10 +24,11 @@ class Prestamo(Base):
     __tablename__='prestamos'
     id= Column(Integer, primary_key=True, autoincrement= True)
     libro_id= Column(Integer,ForeignKey('libros.id'),nullable=False)
-    usuario= Column(String(100),nullable=False )
+    usuario_id= Column(Integer, ForeignKey('usuarios.id'),nullable=False )
     devuelto = Column(Boolean, default=False, nullable=False)
 
     libro= relationship('Libro', back_populates='prestamos')
+    usuario= relationship('Usuario', back_populates= 'prestamos')
 
     ## relationship nos permite navegar esa relacion desde python /orm
     #back_population nos indica el otro lado de esta relacion 
@@ -37,5 +38,7 @@ class Usuario(Base):
     id= Column(Integer, primary_key=True, autoincrement= True)
     email= Column(String(100),nullable= False,unique=True,index=True)
     password_hash= Column(String(100),nullable=False)
-    rol= Column(String(100),nullable= False)
+    rol= Column(String(100),nullable= False, default='usuario')
     activo= Column(Boolean, default= True, nullable= False)
+
+    prestamos= relationship('Prestamo', back_populates= 'usuario')

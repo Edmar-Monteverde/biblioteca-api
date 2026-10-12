@@ -33,14 +33,14 @@ class LibroUpdate(BaseModel):
 ##modelos pydantic para prestamos
 class CreatePrestamo(BaseModel):
     libro_id: int=Field(gt=0)
-    usuario: str=Field(min_length=2)
-   
+
+
 
 
 class ResponsePrestamo(BaseModel):
     id:int
     libro_id: int
-    usuario:str
+    usuario_id:int
     devuelto:bool
 
 

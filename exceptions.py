@@ -32,3 +32,7 @@ class TokenExpiradoError(Exception):
 
 class TokenInvalidoError(Exception):
     pass
+
+
+class UsuarioNoAutorizadoError(Exception):
+    pass
